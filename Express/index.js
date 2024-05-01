@@ -9,7 +9,7 @@ app.set("view engine","ejs");
 
 app.set("views",path.join(__dirname,"/views"));
 
-app.get("username:",(req,res)=>{
+app.get(":",(req,res)=>{
     let{username}=req.params;
   res.render("home.ejs");
 });
