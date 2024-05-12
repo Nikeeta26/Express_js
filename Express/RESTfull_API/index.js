@@ -56,8 +56,15 @@ app.get("/posts/:id",(req,res)=>{
     let{id} = req.params;
     let post = posts.find((p)=>id === p.id);
     console.log(post);
+    if(id)
+        {
+            res.render("show.ejs",{post});
+        }
+        else{
+            res.render("error.ejs");
+        }
     //res.send("work");
-    res.render("show.ejs",{post});
+   
 });
 
 app.patch("/posts/:id",(req,res)=>{
