@@ -12,7 +12,7 @@ app.use(express.urlencoded({extended:true}));
 import mysql from 'mysql2/promise';
 
 app.listen(port,()=>{
-  console.log("run on 8080");
+  console.log("run on 8080 express");
 });
 
 //home routs
