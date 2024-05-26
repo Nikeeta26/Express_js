@@ -1,86 +1,85 @@
 const express = require("express");
-const app = express();
-const mongoose = require('mongoose');
-const Chat  = require("./models/chat.js");
+let app = express();
+const { v4: uuidv4 } = require('uuid');
+const methodOverride = require("method-override");
+app.use(express.urlencoded({extended:true}));//use
+app.use(methodOverride('_method'));
+
 const path = require("path");
-
-app.set("views",path.join(__dirname,"views"));
 app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"views"));
 app.use(express.static(path.join(__dirname,"public")));
-app.use(express.urlencoded({extended:true}));
-
-main().then((result)=>{
-    console.log("connection succesfully ",result);
-}).catch(err => console.log(err));
-
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/whatapp');
-
-  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
-}
-
-//insert data
-// let chat1 = new Chat({
-//     from:"nikeeta",
-//     to:"sneha",
-//     message:"hi hello i am nik",
-//     created_at:new Date()
-// });
-// chat1.save().then((data)=>{
-//     console.log("hi i am nik",data);
-// }).catch((error)=>{
-//     console.log(error,"oh no error occurse");
-// })
-
-//index Route
-app.get("/chats",async(req,res)=>{
-   let chats = await Chat.find();
-
-
-//  Chat.find().then((data)=>{
-//     console.log(data);
-
-res.render("index.ejs",{chats});
-});
-
-//New AND Create Route
-app.get("/chats/new",(req,res)=>{
-res.render("newChat.ejs");
-});
-
-app.post("/chats",(req,res)=>{
-  let{from,to,message} = req.body;
-  let newChats = new Chat({
-    from : from,
-    to : to,
-    message :message,
-    created_at : new Date()
-  });
-  newChats.save().then((result)=>{
-    console.log("data are save");
-  }).catch((error)=>{
-    console.log(error);
-  });
-  console.log(newChats);
- res.redirect("index.ejs");
+let port = 3000;
+app.listen(port,()=>{
+    console.log(`server run on ${port}`);
 })
 
-//edit Rout:
-app.get("/chats/:id/edit",async(req,res)=>{
-  let{id} = await req.params;
-  let chat = Chat.findById(id);
- res.render("edit.ejs",{chat});
+let posts = [
+    {
+        id:uuidv4(),
+        username:"apanacollege",
+        content:"I love coding"
+    },
+
+    {
+        id:uuidv4(),
+        username:"nikeeta_kaudare",
+        content:"i love gaming"
+    },
+
+    {
+        id:uuidv4(),
+        username:"shivraj_kaudare",
+        content:"belives your self"
+    },
+];
+
+app.get("/posts",(req,res)=>{
+
+ res.render("index.ejs",{posts});
 
 });
-app.put("/chats/:id",(req,res)=>{
 
+app.get("/posts/new",(req,res)=>{
+res.render("form.ejs");
 });
 
-app.get("/nik",(req,res)=>{
-    req.send("hello");
+app.post("/posts",(req,res)=>{
+    let{username,content} = req.body;
+    let id = uuidv4();
+    posts.push({id,username,content});
+  console.log(req.body);
+  res.redirect("/posts");
+})
+
+app.get("/posts/:id",(req,res)=>{
+    let{id} = req.params;
+    let post = posts.find((p)=>id === p.id);
+    console.log(post);
+    //res.send("work");
+    res.render("show.ejs",{post});
 });
 
-let port = 8080;
-app.listen(port,()=>{
-    console.log("run on port 8080");
+app.patch("/posts/:id",(req,res)=>{
+    let{id} = req.params;
+    let newcontent = req.body.content;
+    let post = posts.find((p)=>id === p.id);
+    post.content = newcontent;
+    console.log(post);
+   res.redirect("/posts");
+  
 });
+
+app.get("/posts/:id/edit",(req,res)=>{
+let{id} = req.params;
+let post = posts.find((p)=> id === p.id);
+res.render("edit.ejs",{post});
+});
+
+app.delete("/posts/:id",(req,res)=>{
+let{id} = req.params;
+ posts = posts.filter((p)=> id !== p.id);
+ //res.send("success");
+res.redirect("/posts");
+});
+
