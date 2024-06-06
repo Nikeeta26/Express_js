@@ -18,6 +18,11 @@ const app = express();
 //   console.log("this is random routes");
 // })
 
+app.use("/",(req,res,next)=>{
+  next();
+  console.log("this is random routes");
+
+})
 
 // //logger 
 // app.use((req,res,next)=>{
@@ -29,9 +34,9 @@ const app = express();
 
 
 
-// app.get("/",(req,res)=>{
-// res.send("hello");
-// });
+app.get("/",(req,res)=>{
+res.send("hello");
+});
 
 // app.get("/random",(req,res)=>{
 //   res.send("this is the random page");
@@ -41,13 +46,34 @@ const app = express();
 //   res.send("page not fount");
 //   console.log("data");
 // })
-app.use("/",(req,res)=>{
-  let{token} = req.query
-  res.send("data");
-});
 
-app.get("/api",(req,res)=>{
+// app.use("/search",(req,res,next)=>{
+// let{token} = req.query;
+// if(token === "giveprocess"){
+//   next();
+// }
+// res.send("Access denoid");
+// });
+
+//multiple middleware
+const chekmiddleware = (req,res,next)=>{
+  let{token,id} = req.query;
+if(token === "showme"){
+  next();
+}
+res.send("not show data");
+};
+
+app.get("/search",chekmiddleware,(req,res)=>{
+  res.send("data");
+  console.log("save data");
+  
+  });
+  
+
+app.get("/search",(req,res)=>{
 res.send("data");
+console.log("save data");
 
 });
 

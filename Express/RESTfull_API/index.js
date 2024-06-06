@@ -67,6 +67,7 @@ app.get("/posts/:id",(req,res)=>{
    
 });
 
+//edit 
 app.patch("/posts/:id",(req,res)=>{
     let{id} = req.params;
     let newcontent = req.body.content;
