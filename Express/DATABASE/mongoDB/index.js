@@ -52,11 +52,16 @@ res.render("index.ejs",{chats});
 });
 
 //New AND Create Route
+// app.use("/chats/new",(req,res,next)=>{
+//   res.send("error occurse");
+//   next(err);
+// });
 app.get("/chats/new",(req,res)=>{
     // throw new expressError(404,"some error occurse");
 res.render("newChat.ejs");
 
 });
+
 
 app.post("/chats",async(req,res,next)=>{
     try{
@@ -82,19 +87,40 @@ app.post("/chats",async(req,res,next)=>{
 }
 });
 
+// asyncWrap function
+function asyncWrap(fn){
+  return function(req,res,next){
+       fn(req,res,next).catch((err)=>
+        
+        next(err));
+  };
+}
 
-app.get("/chats/:id",async(req,res,next)=>{
-    try{
-  let{id} = req.params;
-  let chat = await Chat.findById(id);
-  if(!chat){
-    next( new expressError(404,"chat not found"));
-  }
+
+app.get("/chats/:id",asyncWrap(async(req,res,next)=>{
+  
+let{id} = req.params;
+let chat = await Chat.findById(id);
+if(!chat){
+  next( new expressError(404,"chat not found"));
+}
 res.render("edit.ejs",{chat});
-    } catch(err){
-        next(err);
-    }
-});
+  
+}));
+
+//error handling
+// app.get("/chats/:id",async(req,res,next)=>{
+//     try{
+//   let{id} = req.params;
+//   let chat = await Chat.findById(id);
+//   if(!chat){
+//     next( new expressError(404,"chat not found"));
+//   }
+// res.render("edit.ejs",{chat});
+//     } catch(err){
+//         next(err);
+//     }
+// });
 
 
 //edit Rout:
@@ -119,7 +145,7 @@ res.redirect("/chats");
 
 //delete
 
-app.delete("/chats/:id",async(req,res,next)=>{
+app.delete("/chats/:id",asyncWrap( async(req,res,next)=>{
     try{
    let{id} = req.params;
    let del = await Chat.findByIdAndDelete(id);
@@ -128,10 +154,27 @@ app.delete("/chats/:id",async(req,res,next)=>{
     } catch(err){
         next(err);
     }
-});
+}));
 
 app.get("/nik",(req,res)=>{
   req.send("hello");
+});
+
+//mongoose error
+const handleValidationErr = (err)=>{
+  console.log("this is an validation error");
+  console.dir(err.message);
+  return err;
+};
+//print error message
+app.use((err,req,res,next)=>{
+ console.log(err.name);
+ if(err.name === "ValidationError")
+  {
+    err = handleValidationErr(err);
+    //console.log(err);
+  }
+ next(err);
 });
 
 // Error handling Middleware
