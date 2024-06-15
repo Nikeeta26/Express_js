@@ -5,6 +5,8 @@ const methodOverride = require("method-override");
 let port = 8080;
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+
+
 app.set("view engin","ejs");
 app.set("views",path.join(__dirname,"/views"));
 app.use(methodOverride("_method"));
@@ -37,7 +39,7 @@ connection.end();
 app.get("/user",(req,res)=>{
 let  q ="select * from user";
 try{
-  query.connection(q,(err,result)=>{
+  connection.query(q,(err,result)=>{
    
       console.log(result);
       res.render("show.ejs",{result});
@@ -72,7 +74,7 @@ app.patch("/user/:id",(req,res)=>{
     connection.query(q,(err,result)=>{
       console.log(result);
       let user = result[0];
-      if(password != user.password)
+      if(password != user.foempassword)
         {
           res.send("wrong password");
         }
@@ -164,7 +166,7 @@ const connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     database: 'test',
-    password:"nikeeta"
+    password:"nikeeta26"
   });
 
 
