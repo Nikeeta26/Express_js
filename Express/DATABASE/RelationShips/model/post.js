@@ -38,37 +38,66 @@ const postSchema = new Schema({
 
 });
 
+userSchema.pre('remove', async function(next) {
+  await Post.deleteMany({ user: this._id });
+  next();
+});
+
+
+
 const User = mongoose.model("User",userSchema);
 
 const Post = mongoose.model("Post",postSchema);
 
 const addData = async ()=>{
 
+
+//         let user1 = new User({
+//              username:"sneha",
+//              email:"nikeeta@gmail.com"
+//         });
+// console.log(user1);
         // let user1 = await User.findOne({username:"nikeeta"});
 
-        // let post1 =  new Post({
-        //   content:"Bye Bye",
+      //  let post1 =  new Post({
+        //   content:"hello world",
         //   likes:40,
         // });
 
         // post1.user = user1;
 
-        // let Postdata = await post1.save();
+        //  let Postdata = await post1.save();
         // console.log(Postdata);
 
 
-        let show = await Post.find({}).populate("user","username");
-        console.log(show);
+        // let show = await Post.find({}).populate("user","username");
+        // console.log(show);
 
 
 
-        // let Userdata = await user1.save();
+        //let Userdata = await user1.save();
         // console.log(Userdata);
 
 
-        // let user1 = new User({
-        //      username:"nikeeta",
-        //      email:"nikeeta@gmail.com"
-        // });
 };
 addData();
+
+
+const deleteUserAndPosts = async (userId) => {
+  try {
+    // Delete user and trigger middleware to delete associated posts
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log(`User with ID ${userId} not found.`);
+      return;
+    }
+
+    await user.deleteOne();
+    console.log(`User with ID ${userId} and associated posts deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting user and posts:", error);
+  }
+};
+
+// Example usage:
+deleteUserAndPosts('666fff598d3a01007e6b1997'); 
