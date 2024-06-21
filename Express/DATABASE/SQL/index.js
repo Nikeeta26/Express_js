@@ -1,15 +1,93 @@
 const { faker } = require('@faker-js/faker');
+const mysql = require("mysql2");
+const express = require("express");
+const app = express();
 
+
+//connection query
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  database: 'delta_app',
+  password:'nikeeta26'
+});
+
+app.get("/user",(req,res)=>{
+  let q = "select * from user";
+  try{
+  connection.query(q,(err,result)=>{
+  if(err) throw err;
+  console.log(result);
+ 
+  });
+}catch(e){
+    console.log(e);
+  }
+});
+
+app.listen(3000,()=>{
+  console.log(" server run on 3000");
+})
 
 let generateRandomUser = () =>{
-  return {
-    id: faker.string.uuid(),
-    username: faker.internet.userName(),
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-  };
+  return [
+     faker.string.uuid(),
+     faker.internet.userName(),
+     faker.internet.email(),
+     faker.internet.password(),
+  ];
 }
-console.log(generateRandomUser());
+
+//let q = "insert into user (id,name,email,password) values (?, ?, ?, ?) ";
+// let user = [123,"nikeeta","nikeeta@gmail.com","nikeeta@26"];
+
+// let user =[
+//   [124,"sneha","sneha@gmail.com","sneha@123"],
+//   [125,"sakshi","sakshi@gmail.com","sakshi@123"]
+//   ];
+//let q = "insert into user (id,name,email,password) values ?";
+
+// insert bulk data 
+    // let data = [];
+    // for(let i=1; i<= 100; i++){
+    //   //console.log(generateRandomUser());
+    //   data.push(generateRandomUser());
+    // }
+           
+ /* pass only user for insert one data and pass [user] for user of data (array of data, one array contain multilpe Aarray 
+ and pass only one ? for this );  connection.query(q,[user],(err,result)=>{  */      
+// try{
+//   connection.query(q,[data],(err,result)=>{
+//     if(err) throw err;
+//     console.log(result);
+//     console.log(result.length);
+//   });
+//   }catch(e){
+//     console.log(e);
+//   }
+
+// try{
+// connection.query("show tables",(err,result)=>{
+//   if(err) throw err;
+//   console.log(result);
+//   console.log(result.length);
+// });
+// }catch(e){
+//   console.log(e);
+// }
+
+// let generateRandomUser = () =>{
+//   return {
+//     id: faker.string.uuid(),
+//     username: faker.internet.userName(),
+//     email: faker.internet.email(),
+//     password: faker.internet.password(),
+//   };
+// }
+
+// connection.end();
+
+//console.log(generateRandomUser());
 
 // const express = require("express");
 // const app = express();

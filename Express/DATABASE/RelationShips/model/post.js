@@ -38,10 +38,10 @@ const postSchema = new Schema({
 
 });
 
-userSchema.pre('remove', async function(next) {
-  await Post.deleteMany({ user: this._id });
-  next();
-});
+// userSchema.pre('remove', async function(next) {
+//   await Post.deleteMany({ user: this._id });
+//   next();
+// });
 
 
 
@@ -83,21 +83,21 @@ const addData = async ()=>{
 addData();
 
 
-const deleteUserAndPosts = async (userId) => {
-  try {
-    // Delete user and trigger middleware to delete associated posts
-    const user = await User.findById(userId);
-    if (!user) {
-      console.log(`User with ID ${userId} not found.`);
-      return;
-    }
+// const deleteUserAndPosts = async (userId) => {
+//   try {
+//     // Delete user and trigger middleware to delete associated posts
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       console.log(`User with ID ${userId} not found.`);
+//       return;
+//     }
 
-    await user.deleteOne();
-    console.log(`User with ID ${userId} and associated posts deleted successfully.`);
-  } catch (error) {
-    console.error("Error deleting user and posts:", error);
-  }
-};
+//     await user.deleteOne();
+//     console.log(`User with ID ${userId} and associated posts deleted successfully.`);
+//   } catch (error) {
+//     console.error("Error deleting user and posts:", error);
+//   }
+// };
 
 // Example usage:
 deleteUserAndPosts('666fff598d3a01007e6b1997'); 

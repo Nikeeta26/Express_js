@@ -53,6 +53,7 @@ customerSchema.post("findOneAndDelete", async (customer)=> {
     //next();
   });
 
+
   const Order = mongoose.model("Order",ordereSchema);
   const Customer = mongoose.model("Customer",customerSchema);
 
