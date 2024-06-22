@@ -18,7 +18,7 @@ app.get("/user",(req,res)=>{
   connection.query(q,(err,result)=>{
   if(err) throw err;
   console.log(result);
- 
+ res.send(result);
   });
 }catch(e){
     console.log(e);
